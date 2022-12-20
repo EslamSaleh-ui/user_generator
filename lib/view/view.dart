@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:serverpod/components/text.dart';
+import 'package:serverpod/components/user_img.dart';
 import 'package:serverpod/model/model.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +18,7 @@ class view extends StatefulWidget {
 class _view extends State<view> with TickerProviderStateMixin{
   Animation<double> _animation;
   AnimationController _animationController;
+
   @override
   void initState(){
     super.initState();
@@ -26,8 +30,15 @@ class _view extends State<view> with TickerProviderStateMixin{
   }
   @override
   Widget build(BuildContext context) {
-       ToastContext().init(context);
-    return Scaffold(
+    List<String> getter1=[' Address: ','  ${widget.user.address}',' City.State: ',
+      '  ${widget.user.city},${widget.user.state}',' Country,Postal_code: ',
+    '  ${widget.user.country},${widget.user.postal_code}',' Coordinates,Timezone: ',
+      '  ${widget.user.coordinates},${widget.user.timezone}',' Phone,Cell: ',
+      '  ${widget.user.phone},${widget.user.cell}'];
+    List<String> getter2=['  Email: ','   ${widget.user.email}',' Username: ',
+      '   ${widget.user.uer_name}', ' Password: ','   ${widget.user.password}'];
+    ToastContext().init(context);
+    return ProviderScope(child:Scaffold(
     appBar: AppBar(title:Text('Re-generate'),centerTitle: true),
       body:  Center(child: Container(
             height:  MediaQuery.of(context).size.height-90,
@@ -35,21 +46,16 @@ class _view extends State<view> with TickerProviderStateMixin{
             decoration:   BoxDecoration(color: Colors.grey,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(mainAxisAlignment: MainAxisAlignment.start,
+            child:SingleChildScrollView(child:
+            Column(mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 5,bottom: 5),
-                      height: 150,
-                      width: 150,
-                      decoration:BoxDecoration(shape: BoxShape.circle,
-                         border: Border.all(color:  Colors.white,width: 3 ),
-                  image:DecorationImage(fit:BoxFit.cover
-                      ,image:NetworkImage(widget.user.img??''))   )),
+                 user_img(texts: widget.user.img??''),
                     Text(widget.user.gender,style: TextStyle(color:Colors.white )),
                   Container(
                       margin: EdgeInsets.only(top: 10,bottom: 5),
-                      height: 75,
+                      constraints: BoxConstraints(
+                          maxHeight: double.infinity ),
                       width:  MediaQuery.of(context).size.width-70,
                       decoration:BoxDecoration(shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(15),
@@ -64,18 +70,22 @@ class _view extends State<view> with TickerProviderStateMixin{
                   child:Column(mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [Text('${widget.user.title} ${widget.user.f_name}.${widget.user.l_name}',
                   style:TextStyle(fontSize: 25,fontWeight:FontWeight.w900 )) ,
+                 Divider(height: 20,color: Colors.transparent),
                  Row(mainAxisAlignment: MainAxisAlignment.spaceAround,
                      children:[Row(children: [Text('Date Of Birth: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
                    Text(widget.user.dob)
                  ]),Row(children: [Text('Age: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
                    Text(widget.user.age)
-                 ])]  )
-                  ]) ),
+                 ])]  ),
+                        Divider(height: 10,color: Colors.transparent)
+                      ]) ),
                   Container(
                       margin: EdgeInsets.only(top: 10,bottom: 5),
-                      height: 190,
+                      constraints: BoxConstraints(
+                          maxHeight: double.infinity ),
                       width:  MediaQuery.of(context).size.width-70,
-                      decoration:BoxDecoration(shape: BoxShape.rectangle,
+                      decoration:BoxDecoration(
+                          shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(15),
                           boxShadow:[
                             BoxShadow(
@@ -88,20 +98,14 @@ class _view extends State<view> with TickerProviderStateMixin{
                       child:Column(crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [Divider(height: 5,color: Colors.transparent),
-                            Text(' Address: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                                  Text('  ${widget.user.address}',style: TextStyle(fontWeight:FontWeight.w900))
-                                ,Text(' City.State: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                                  Text('  ${widget.user.city},${widget.user.state}',style: TextStyle(fontWeight:FontWeight.w900)),
-                            Text(' Country,Postal_code: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                            Text('  ${widget.user.country},${widget.user.postal_code}',style: TextStyle(fontWeight:FontWeight.w900)),
-                            Text(' Coordinates,Timezone: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                            Text('  ${widget.user.coordinates},${widget.user.timezone}',style: TextStyle(fontWeight:FontWeight.w900)),
-                            Text(' Phone,Cell: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                            Text('  ${widget.user.phone},${widget.user.cell}',style: TextStyle(fontWeight:FontWeight.w900)),
+                          Column(crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children:  getter1.map((e) =>text(texts: e,color:getter1.indexOf(e)%2==0?Colors.black: Colors.blue.shade900,fontWeight:FontWeight.w900)).toList())
                           ]) ),
                   Container(
                       margin: EdgeInsets.only(top: 10,bottom: 5),
-                      height: 100,
+                      constraints: BoxConstraints(
+                          maxHeight: double.infinity ),
                       width:  MediaQuery.of(context).size.width-70,
                       decoration:BoxDecoration(shape: BoxShape.rectangle,
                           borderRadius: BorderRadius.circular(15),
@@ -115,15 +119,10 @@ class _view extends State<view> with TickerProviderStateMixin{
                           color: Colors.white),
                       child:Column(mainAxisAlignment: MainAxisAlignment.spaceAround,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-               Text('  Email: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                                  Text('   ${widget.user.email}',style: TextStyle(fontWeight:FontWeight.w900))
-                               ,Text(' Username: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                              Text('   ${widget.user.uer_name}',style: TextStyle(fontWeight:FontWeight.w900)),
-                            Text(' Password: ',style: TextStyle(color: Colors.blue.shade900,fontWeight:FontWeight.w900)),
-                            Text('   ${widget.user.password}',style: TextStyle(fontWeight:FontWeight.w900))
-                          ]) )
-                ])
+                          children: getter2.map((e) => text(texts: e,color:getter2.indexOf(e)%2==0?Colors.black: Colors.blue.shade900,fontWeight:FontWeight.w900)
+                          ).toList()
+                          ) )
+                ]  ))
         ) ),floatingActionButton: FloatingActionBubble(items:<Bubble> [
           Bubble( icon: Icons.copy, iconColor: Colors.white, title: '', titleStyle: null, bubbleColor: Colors.blue,
             onPress: () {  Clipboard.setData(ClipboardData(text:{'id':'${widget.user.id}','title':widget.user.title,'f_name':'${widget.user.f_name}', 'l_name':widget.user.l_name,
@@ -147,6 +146,6 @@ class _view extends State<view> with TickerProviderStateMixin{
           ? _animationController.reverse()
           : _animationController.forward(),
       iconColor: null, backGroundColor: null)
-    );
+    ));
   }
 }

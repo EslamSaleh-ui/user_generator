@@ -4,7 +4,7 @@ import 'package:serverpod/controller/controller.dart';
 import 'package:serverpod/view/view.dart';
 import 'package:page_animation_transition/animations/bottom_to_top_transition.dart';
 import 'package:page_animation_transition/page_animation_transition.dart';
-import 'package:serverpod/view/custom.dart';
+import 'package:serverpod/components/custom.dart';
 import 'package:serverpod/components/container.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 
@@ -49,9 +49,11 @@ class MyHomePage extends StatelessWidget {
             custom().load(context);
             final value=   await InternetConnectionChecker().connectionStatus;
             if(value==InternetConnectionStatus.connected)
-            {       await   change.generate_user();
-            Navigator.of(context).push(PageAnimationTransition(page: ProviderScope(child: view(user:change.generated_user)),
-                pageAnimationType:BottomToTopTransition() ));}
+            {
+              await   change.generate_user();
+            Navigator.of(context).push(PageAnimationTransition(page:  view(user:change.generated_user),
+                pageAnimationType:BottomToTopTransition() ));
+            }
             else  {custom().modalBottomSheetMenu(context);}
           }, style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white, backgroundColor: Colors.blue.shade800,

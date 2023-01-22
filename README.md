@@ -4,6 +4,10 @@ A new Flutter project.
 
 -  riverpod state management 
 
+- clean code
+
+- unit test
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
